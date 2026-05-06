@@ -3,19 +3,18 @@
 #include <iostream>
 #include <yaml-cpp/yaml.h>
 
+#include <gtest/gtest.h>
+
 struct TestStruct {
     int a;
     std::string b;
 };
 
-int main() {
-    YAML::Node yaml_dict = YAML::Load("{a: 42, b: 'Hello'}");
+TEST(AnarosTest, BasicParsing) {
+    YAML::Node yaml = YAML::Load("{a: 42, b: 'Hello'}");
+    auto result = anaros::parse_from_yaml<TestStruct>(yaml);
 
-    auto result = anaros::parse_from_yaml<TestStruct>(yaml_dict);
-
-    if (result) {
-        std::cout << "Parsed successfully: a = " << result->a << ", b = " << result->b << std::endl;
-    } else {
-        std::cerr << "Error: " << result.error() << std::endl;
-    }
+    ASSERT_TRUE(result.has_value());
+    EXPECT_EQ(result->a, 42);
+    EXPECT_EQ(result->b, "Hello");
 }

@@ -14,6 +14,15 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(yaml-cpp)
 
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com
+)
+FetchContent_MakeAvailable(googletest)
+
+enable_testing()
+
 add_library(anaros INTERFACE)
 add_library(Anaros::anaros ALIAS anaros)
 
@@ -24,3 +33,8 @@ target_link_libraries(anaros INTERFACE yaml-cpp::yaml-cpp)
 
 add_executable(anaros_test test/test.cpp)
 target_link_libraries(anaros_test PRIVATE Anaros::anaros)
+target_link_libraries(anaros_test GTest::gtest_main)
+
+# 5. Automatically discover tests defined in the executable
+include(GoogleTest)
+gtest_discover_tests(anaros_test)
